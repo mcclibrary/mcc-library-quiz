@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCC Library General Knowledge Quiz</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#eaf4ff,#f5efff);color:#172033}
+.wrap{max-width:860px;margin:auto;padding:24px 15px}
+.card{background:#fff;border-radius:24px;padding:30px;box-shadow:0 16px 45px rgba(0,0,0,.14)}
+h1{margin:0 0 10px;font-size:30px;color:#172554}
+.subtitle{color:#64748b;line-height:1.5;margin-bottom:24px}
+.hidden{display:none!important}
+.start{text-align:center}
+.input{display:block;width:100%;max-width:520px;margin:12px auto;padding:15px;border:2px solid #cbd5e1;border-radius:12px;font-size:16px}
+.input:focus{outline:none;border-color:#4f46e5}
+.main-btn{border:0;border-radius:12px;padding:14px 28px;background:#4f46e5;color:#fff;font-size:17px;font-weight:bold;cursor:pointer;margin-top:10px}
+.main-btn:hover{background:#3730a3}
+.qtop{display:flex;justify-content:space-between;align-items:center}
+.qnum{font-weight:bold;color:#4338ca;font-size:17px}
+.progress{height:10px;background:#e5e7eb;border-radius:20px;overflow:hidden;margin:15px 0 26px}
+.progressbar{height:100%;background:#4f46e5;width:0;transition:.35s}
+.question{font-size:24px;font-weight:bold;line-height:1.4;margin:15px 0 24px}
+.options{display:flex;flex-direction:column;gap:12px}
+.option{display:block!important;width:100%!important;min-height:58px!important;padding:15px 18px!important;border:2px solid #cbd5e1!important;border-radius:14px!important;background:#fff!important;color:#111827!important;font-size:17px!important;text-align:left!important;cursor:pointer!important;visibility:visible!important;opacity:1!important}
+.option:hover{border-color:#4f46e5!important;background:#eef2ff!important}
+.option.selected{border-color:#4f46e5!important;background:#e0e7ff!important;color:#1e1b4b!important;font-weight:bold!important}
+.next-row{text-align:right;margin-top:20px}
+.result{text-align:center}
+.badge{display:inline-block;padding:8px 15px;border-radius:30px;background:#e0e7ff;color:#3730a3;font-weight:bold}
+.score{font-size:64px;font-weight:800;color:#4f46e5;margin:15px}
+.result-text{font-size:17px;line-height:1.7}
+.small{font-size:13px;color:#64748b;margin-top:25px}
+.fade{animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateX(15px)}to{opacity:1;transform:none}}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.piece{position:absolute;width:9px;height:16px;animation:fall 2.8s linear forwards}
+@keyframes fall{from{transform:translateY(-30px) rotate(0);opacity:1}to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+@media(max-width:600px){.card{padding:20px}h1{font-size:25px}.question{font-size:21px}.option{font-size:16px!important}}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="card">
+
+<section id="start" class="start">
+<h1>📚 MCC Library General Knowledge Quiz</h1>
+<p class="subtitle">10 questions • Moderate difficulty • Choose the best answer.</p>
+<input id="fullName" class="input" placeholder="Enter FULL NAME" autocomplete="name">
+<input id="studentNumber" class="input" placeholder="Enter STUDENT NUMBER">
+<button id="startBtn" class="main-btn" type="button">Start Quiz</button>
+<p class="small">Please enter your complete name and student number before starting.</p>
+</section>
+
+<section id="quiz" class="hidden">
+<div class="qtop"><div id="qnum" class="qnum"></div></div>
+<div class="progress"><div id="progressbar" class="progressbar"></div></div>
+<div id="questionBox" class="fade">
+<div id="question" class="question"></div>
+<div id="options" class="options"></div>
+<div class="next-row"><button id="nextBtn" class="main-btn" type="button">Next →</button></div>
+</div>
+</section>
+
+<section id="result" class="result hidden">
+<span class="badge">QUIZ COMPLETE</span>
+<h1 id="thankYou"></h1>
+<div id="score" class="score"></div>
+<div id="resultText" class="result-text"></div>
+<p class="small">MCC Library • General Knowledge Quiz</p>
+</section>
+
+</div></div>
+<div id="confetti" class="confetti"></div>
+
+<script>
+const questions=[
+{q:"Which country has the largest population in Southeast Asia?",a:["Indonesia","Philippines","Vietnam","Thailand"],c:0},
+{q:"Which vitamin is mainly produced by the body when the skin is exposed to sunlight?",a:["Vitamin D","Vitamin A","Vitamin C","Vitamin B12"],c:0},
+{q:"Which event is generally regarded as the beginning of World War II in Europe?",a:["Germany's invasion of Poland","Attack on Pearl Harbor","D-Day invasion","Fall of Berlin"],c:0},
+{q:"Which layer of Earth's atmosphere contains most of the ozone layer?",a:["Stratosphere","Troposphere","Mesosphere","Thermosphere"],c:0},
+{q:"Who wrote the novel 'The Little Prince'?",a:["Antoine de Saint-Exupéry","Victor Hugo","Jules Verne","Albert Camus"],c:0},
+{q:"What is the primary purpose of the CPU in a computer?",a:["To execute instructions and process data","To permanently store files","To display images on a monitor","To connect a computer to Wi-Fi"],c:0},
+{q:"Which Philippine volcano is known for having a lake within its volcanic crater?",a:["Taal Volcano","Mayon Volcano","Mount Pinatubo","Mount Kanlaon"],c:0},
+{q:"Which branch of government is primarily responsible for interpreting laws in a democratic system?",a:["Judiciary","Executive","Legislative","Electoral"],c:0},
+{q:"Which gas makes up the largest percentage of Earth's atmosphere?",a:["Nitrogen","Oxygen","Carbon dioxide","Hydrogen"],c:0},
+{q:"If a book costs ₱800 and is discounted by 15%, how much is the sale price?",a:["₱680","₱700","₱720","₱760"],c:0}
+];
+
+let current=0,score=0,selected=-1,fullName="",studentNumber="";
+
+const $=id=>document.getElementById(id);
+
+$("startBtn").addEventListener("click",startQuiz);
+$("nextBtn").addEventListener("click",nextQuestion);
+
+function startQuiz(){
+ fullName=$("fullName").value.trim();
+ studentNumber=$("studentNumber").value.trim();
+ if(!fullName){alert("Please enter your FULL NAME.");$("fullName").focus();return;}
+ if(!studentNumber){alert("Please enter your STUDENT NUMBER.");$("studentNumber").focus();return;}
+ $("start").classList.add("hidden");
+ $("quiz").classList.remove("hidden");
+ showQuestion();
+}
+
+function showQuestion(){
+ selected=-1;
+ const item=questions[current];
+ $("qnum").textContent="Question "+(current+1)+" of "+questions.length;
+ $("progressbar").style.width=((current+1)/questions.length*100)+"%";
+ $("question").textContent=item.q;
+ const box=$("options"); box.innerHTML="";
+ item.a.forEach((answer,index)=>{
+   const btn=document.createElement("button");
+   btn.type="button"; btn.className="option";
+   btn.textContent=String.fromCharCode(65+index)+". "+answer;
+   btn.addEventListener("click",()=>{
+     selected=index;
+     document.querySelectorAll(".option").forEach(b=>b.classList.remove("selected"));
+     btn.classList.add("selected");
+   });
+   box.appendChild(btn);
+ });
+ $("nextBtn").textContent=current===questions.length-1?"Submit Quiz ✓":"Next →";
+ const qbox=$("questionBox");qbox.classList.remove("fade");void qbox.offsetWidth;qbox.classList.add("fade");
+}
+
+function nextQuestion(){
+ if(selected===-1){alert("Please select an answer.");return;}
+ if(selected===questions[current].c)score++;
+ current++;
+ if(current<questions.length)showQuestion();else finishQuiz();
+}
+
+function finishQuiz(){
+ $("quiz").classList.add("hidden");
+ $("result").classList.remove("hidden");
+ const pct=Math.round(score/questions.length*100);
+ $("thankYou").textContent="Thank you, "+fullName+"!";
+ $("score").textContent=score+" / "+questions.length;
+ $("resultText").innerHTML="<strong>Student Number:</strong> "+escapeHTML(studentNumber)+
+ "<br><strong>Score:</strong> "+pct+"%<br><br>"+
+ (pct>=90?"Excellent!":pct>=70?"Well done!":"Good effort! Keep learning and exploring.");
+ if(pct>=70)confetti();
+}
+
+function escapeHTML(s){
+ return s.replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch]));
+}
+function confetti(){
+ const area=$("confetti");
+ for(let i=0;i<70;i++){
+  const p=document.createElement("i");p.className="piece";
+  p.style.left=Math.random()*100+"%";
+  p.style.background="hsl("+Math.floor(Math.random()*360)+",80%,60%)";
+  p.style.animationDelay=Math.random()*1.2+"s";
+  area.appendChild(p);
+ }
+ setTimeout(()=>area.innerHTML="",4000);
+}
+</script>
+</body>
+</html>
