@@ -77,16 +77,16 @@ h1{margin:0 0 10px;font-size:30px;color:#172554}
 const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzjSXBK_WM3OQ9PYU1YOiT4K8YGMLIRanhwobyenExg1tKkIjtmw5qFXfwEH75_-mR-/exec";
 
 const questions=[
-{q:"Which country has the largest population in Southeast Asia?",a:["Indonesia","Philippines","Vietnam","Thailand"],c:0},
-{q:"Which vitamin is mainly produced by the body when the skin is exposed to sunlight?",a:["Vitamin D","Vitamin A","Vitamin C","Vitamin B12"],c:0},
-{q:"Which event is generally regarded as the beginning of World War II in Europe?",a:["Germany's invasion of Poland","Attack on Pearl Harbor","D-Day invasion","Fall of Berlin"],c:0},
-{q:"Which layer of Earth's atmosphere contains most of the ozone layer?",a:["Stratosphere","Troposphere","Mesosphere","Thermosphere"],c:0},
-{q:"Who wrote the novel 'The Little Prince'?",a:["Antoine de Saint-Exupéry","Victor Hugo","Jules Verne","Albert Camus"],c:0},
-{q:"What is the primary purpose of the CPU in a computer?",a:["To execute instructions and process data","To permanently store files","To display images on a monitor","To connect a computer to Wi-Fi"],c:0},
-{q:"Which Philippine volcano is known for having a lake within its volcanic crater?",a:["Taal Volcano","Mayon Volcano","Mount Pinatubo","Mount Kanlaon"],c:0},
-{q:"Which branch of government is primarily responsible for interpreting laws in a democratic system?",a:["Judiciary","Executive","Legislative","Electoral"],c:0},
-{q:"Which gas makes up the largest percentage of Earth's atmosphere?",a:["Nitrogen","Oxygen","Carbon dioxide","Hydrogen"],c:0},
-{q:"If a book costs ₱800 and is discounted by 15%, how much is the sale price?",a:["₱680","₱700","₱720","₱760"],c:0}
+{q:"Which country has the largest population in Southeast Asia?",a:["Thailand","Indonesia","Vietnam","Philippines"],c:1},
+{q:"Which vitamin is mainly produced by the body when the skin is exposed to sunlight?",a:["Vitamin C","Vitamin B12","Vitamin D","Vitamin A"],c:2},
+{q:"Which event is generally regarded as the beginning of World War II in Europe?",a:["D-Day invasion","Germany's invasion of Poland","Attack on Pearl Harbor","Fall of Berlin"],c:1},
+{q:"Which layer of Earth's atmosphere contains most of the ozone layer?",a:["Mesosphere","Troposphere","Thermosphere","Stratosphere"],c:3},
+{q:"Who wrote the novel 'The Little Prince'?",a:["Jules Verne","Albert Camus","Victor Hugo","Antoine de Saint-Exupéry"],c:3},
+{q:"What is the primary purpose of the CPU in a computer?",a:["To display images on a monitor","To execute instructions and process data","To connect a computer to Wi-Fi","To permanently store files"],c:1},
+{q:"Which Philippine volcano is known for having a lake within its volcanic crater?",a:["Mount Pinatubo","Taal Volcano","Mount Kanlaon","Mayon Volcano"],c:1},
+{q:"Which branch of government is primarily responsible for interpreting laws in a democratic system?",a:["Legislative","Electoral","Judiciary","Executive"],c:2},
+{q:"Which gas makes up the largest percentage of Earth's atmosphere?",a:["Oxygen","Hydrogen","Carbon dioxide","Nitrogen"],c:3},
+{q:"If a book costs ₱800 and is discounted by 15%, how much is the sale price?",a:["₱720","₱680","₱760","₱700"],c:1}
 ];
 
 let current=0,score=0,selected=-1,fullName="",studentNumber="";
