@@ -74,6 +74,8 @@ h1{margin:0 0 10px;font-size:30px;color:#172554}
 <div id="confetti" class="confetti"></div>
 
 <script>
+const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzjSXBK_WM3OQ9PYU1YOiT4K8YGMLIRanhwobyenExg1tKkIjtmw5qFXfwEH75_-mR-/exec";
+
 const questions=[
 {q:"Which country has the largest population in Southeast Asia?",a:["Indonesia","Philippines","Vietnam","Thailand"],c:0},
 {q:"Which vitamin is mainly produced by the body when the skin is exposed to sunlight?",a:["Vitamin D","Vitamin A","Vitamin C","Vitamin B12"],c:0},
@@ -136,13 +138,37 @@ function nextQuestion(){
 function finishQuiz(){
  $("quiz").classList.add("hidden");
  $("result").classList.remove("hidden");
+
  const pct=Math.round(score/questions.length*100);
+
  $("thankYou").textContent="Thank you, "+fullName+"!";
  $("score").textContent=score+" / "+questions.length;
  $("resultText").innerHTML="<strong>Student Number:</strong> "+escapeHTML(studentNumber)+
  "<br><strong>Score:</strong> "+pct+"%<br><br>"+
  (pct>=90?"Excellent!":pct>=70?"Well done!":"Good effort! Keep learning and exploring.");
+
+ sendQuizResult(score, pct);
+
  if(pct>=70)confetti();
+}
+
+function sendQuizResult(finalScore, percentage){
+ const body = new URLSearchParams();
+ body.append("fullName", fullName);
+ body.append("studentNumber", studentNumber);
+ body.append("score", finalScore);
+ body.append("percentage", percentage);
+
+ fetch(GOOGLE_SHEET_ENDPOINT, {
+   method: "POST",
+   mode: "no-cors",
+   headers: {
+     "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+   },
+   body: body.toString()
+ }).catch(function(error){
+   console.log("Quiz result submission error:", error);
+ });
 }
 
 function escapeHTML(s){
