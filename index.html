@@ -32,6 +32,27 @@ h1{margin:0 0 10px;font-size:30px;color:#172554}
 .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden}.piece{position:absolute;width:9px;height:16px;animation:fall 2.8s linear forwards}
 @keyframes fall{from{transform:translateY(-30px) rotate(0);opacity:1}to{transform:translateY(110vh) rotate(720deg);opacity:0}}
 @media(max-width:600px){.card{padding:20px}h1{font-size:25px}.question{font-size:21px}.option{font-size:16px!important}}
+
+.verify-box{
+  margin:24px auto 0;
+  padding:18px 20px;
+  max-width:620px;
+  border:2px solid #4f46e5;
+  border-radius:16px;
+  background:#eef2ff;
+  color:#1e1b4b;
+  font-size:17px;
+  line-height:1.55;
+  text-align:center;
+  font-weight:600;
+}
+.verify-box strong{
+  display:block;
+  font-size:19px;
+  margin-bottom:6px;
+  color:#3730a3;
+}
+
 </style>
 </head>
 <body>
@@ -54,6 +75,11 @@ h1{margin:0 0 10px;font-size:30px;color:#172554}
 <section id="result" class="result hidden">
 <span class="badge">QUIZ COMPLETE</span><h1 id="thankYou"></h1><div id="score" class="score"></div>
 <div id="resultText" class="result-text"></div>
+<div class="verify-box">
+  <strong>📚 IMPORTANT</strong>
+  Present this result screen to the <b>Library Staff</b> for verification.<br>
+  Your <b>QR Quest participation will only be logged after verification by the Library Staff.</b>
+</div>
 <p class="small">MCC Library • Library Learning Engagement Program</p>
 </section>
 </div></div><div id="confetti" class="confetti"></div>
