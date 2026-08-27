@@ -63,6 +63,7 @@ h1{margin:0 0 10px;font-size:30px;color:#172554}
 <input id="fullName" class="input" placeholder="Enter FULL NAME" autocomplete="name">
 <input id="studentNumber" class="input" placeholder="Enter STUDENT NUMBER">
 <button id="startBtn" class="main-btn" type="button">Start Quiz</button>
+<div id="eligibilityStatus" class="small" style="min-height:22px;margin-top:12px;"></div>
 <p class="small">Please enter your complete name and student number before starting.</p>
 </section>
 <section id="quiz" class="hidden">
@@ -102,7 +103,100 @@ const $=id=>document.getElementById(id);
 $("startBtn").addEventListener("click",startQuiz);$("nextBtn").addEventListener("click",nextQuestion);
 function shuffle(array){const copy=[...array];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}return copy;}
 function prepareQuestions(){displayedQuestions=questions.map(item=>{const answers=item.a.map((text,index)=>({text,index}));const shuffled=shuffle(answers);return{q:item.q,a:shuffled.map(x=>x.text),c:shuffled.findIndex(x=>x.index===item.correct)};});}
-function startQuiz(){fullName=$("fullName").value.trim();studentNumber=$("studentNumber").value.trim();if(!fullName){alert("Please enter your FULL NAME.");$("fullName").focus();return;}if(!studentNumber){alert("Please enter your STUDENT NUMBER.");$("studentNumber").focus();return;}prepareQuestions();current=0;score=0;$("start").classList.add("hidden");$("quiz").classList.remove("hidden");showQuestion();}
+function startQuiz(){
+ fullName=$("fullName").value.trim();
+ studentNumber=$("studentNumber").value.trim();
+
+ if(!fullName){
+   alert("Please enter your FULL NAME.");
+   $("fullName").focus();
+   return;
+ }
+
+ if(!studentNumber){
+   alert("Please enter your STUDENT NUMBER.");
+   $("studentNumber").focus();
+   return;
+ }
+
+ const status=$("eligibilityStatus");
+ const btn=$("startBtn");
+
+ status.textContent="Checking your QR Quest participation for this month...";
+ btn.disabled=true;
+ btn.textContent="Checking...";
+
+ checkMonthlyEligibility(studentNumber)
+   .then(function(result){
+     if(result.alreadyCompleted){
+       status.innerHTML=
+         "<strong>You have already completed QR Quest for this month.</strong><br>"+
+         "Only one QR Quest activity may be credited per month. "+
+         "Please participate in another LLEP activity or try QR Quest again next month.";
+       btn.textContent="Already Completed";
+       btn.disabled=true;
+       return;
+     }
+
+     status.textContent="";
+     btn.disabled=false;
+     btn.textContent="Start Quiz";
+
+     prepareQuestions();
+     current=0;
+     score=0;
+
+     $("start").classList.add("hidden");
+     $("quiz").classList.remove("hidden");
+     showQuestion();
+   })
+   .catch(function(){
+     status.innerHTML=
+       "<strong>Unable to verify your monthly QR Quest status.</strong><br>"+
+       "Please ask the Library Staff for assistance.";
+     btn.disabled=false;
+     btn.textContent="Try Again";
+   });
+}
+
+function checkMonthlyEligibility(number){
+ return new Promise(function(resolve,reject){
+   const callbackName="qrQuestCheck_"+Date.now()+"_"+Math.floor(Math.random()*100000);
+
+   const cleanup=function(){
+     try{ delete window[callbackName]; }catch(e){}
+     if(script.parentNode) script.parentNode.removeChild(script);
+   };
+
+   window[callbackName]=function(data){
+     cleanup();
+     resolve(data||{alreadyCompleted:false});
+   };
+
+   const script=document.createElement("script");
+   script.src=
+     GOOGLE_SHEET_ENDPOINT+
+     "?action=checkMonthly"+
+     "&studentNumber="+encodeURIComponent(number)+
+     "&callback="+encodeURIComponent(callbackName)+
+     "&_="+Date.now();
+
+   script.onerror=function(){
+     cleanup();
+     reject(new Error("Eligibility check failed"));
+   };
+
+   document.body.appendChild(script);
+
+   setTimeout(function(){
+     if(window[callbackName]){
+       cleanup();
+       reject(new Error("Eligibility check timed out"));
+     }
+   },12000);
+ });
+}
+
 function showQuestion(){selected=-1;const item=displayedQuestions[current];$("qnum").textContent="Question "+(current+1)+" of "+displayedQuestions.length;$("progressbar").style.width=((current+1)/displayedQuestions.length*100)+"%";$("question").textContent=item.q;const box=$("options");box.innerHTML="";item.a.forEach((answer,index)=>{const btn=document.createElement("button");btn.type="button";btn.className="option";btn.textContent=String.fromCharCode(65+index)+". "+answer;btn.addEventListener("click",()=>{selected=index;document.querySelectorAll(".option").forEach(b=>b.classList.remove("selected"));btn.classList.add("selected");});box.appendChild(btn);});$("nextBtn").textContent=current===displayedQuestions.length-1?"Submit Quiz ✓":"Next →";const qbox=$("questionBox");qbox.classList.remove("fade");void qbox.offsetWidth;qbox.classList.add("fade");}
 function nextQuestion(){if(selected===-1){alert("Please select an answer.");return;}if(selected===displayedQuestions[current].c)score++;current++;if(current<displayedQuestions.length)showQuestion();else finishQuiz();}
 function finishQuiz(){$("quiz").classList.add("hidden");$("result").classList.remove("hidden");const pct=Math.round(score/displayedQuestions.length*100);$("thankYou").textContent="Thank you, "+fullName+"!";$("score").textContent=score+" / "+displayedQuestions.length;$("resultText").innerHTML="<strong>Student Number:</strong> "+escapeHTML(studentNumber)+"<br><strong>Score:</strong> "+pct+"%<br><br>"+(pct>=90?"Excellent!":pct>=70?"Well done!":"Good effort! Keep learning and exploring.");sendQuizResult(score,pct);if(pct>=70)confetti();}
