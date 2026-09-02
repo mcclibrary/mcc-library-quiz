@@ -16,6 +16,7 @@ h1{margin:0 0 10px;font-size:30px;color:#172554}
 .input:focus{outline:none;border-color:#4f46e5}
 .main-btn{border:0;border-radius:12px;padding:14px 28px;background:#4f46e5;color:#fff;font-size:17px;font-weight:bold;cursor:pointer;margin-top:10px}
 .main-btn:hover{background:#3730a3}
+.main-btn:disabled{opacity:.65;cursor:not-allowed}
 .qtop{display:flex;justify-content:space-between;align-items:center}.qnum{font-weight:bold;color:#4338ca;font-size:17px}
 .progress{height:10px;background:#e5e7eb;border-radius:20px;overflow:hidden;margin:15px 0 26px}
 .progressbar{height:100%;background:#4f46e5;width:0;transition:.35s}
@@ -28,44 +29,26 @@ h1{margin:0 0 10px;font-size:30px;color:#172554}
 .badge{display:inline-block;padding:8px 15px;border-radius:30px;background:#e0e7ff;color:#3730a3;font-weight:bold}
 .score{font-size:64px;font-weight:800;color:#4f46e5;margin:15px}.result-text{font-size:17px;line-height:1.7}
 .small{font-size:13px;color:#64748b;margin-top:25px}.fade{animation:fade .35s ease}
+.verify-box{margin:24px auto 0;padding:18px 20px;max-width:620px;border:2px solid #4f46e5;border-radius:16px;background:#eef2ff;color:#1e1b4b;font-size:17px;line-height:1.55;text-align:center;font-weight:600}
+.verify-box strong{display:block;font-size:19px;margin-bottom:6px;color:#3730a3}
 @keyframes fade{from{opacity:0;transform:translateX(15px)}to{opacity:1;transform:none}}
 .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden}.piece{position:absolute;width:9px;height:16px;animation:fall 2.8s linear forwards}
 @keyframes fall{from{transform:translateY(-30px) rotate(0);opacity:1}to{transform:translateY(110vh) rotate(720deg);opacity:0}}
 @media(max-width:600px){.card{padding:20px}h1{font-size:25px}.question{font-size:21px}.option{font-size:16px!important}}
-
-.verify-box{
-  margin:24px auto 0;
-  padding:18px 20px;
-  max-width:620px;
-  border:2px solid #4f46e5;
-  border-radius:16px;
-  background:#eef2ff;
-  color:#1e1b4b;
-  font-size:17px;
-  line-height:1.55;
-  text-align:center;
-  font-weight:600;
-}
-.verify-box strong{
-  display:block;
-  font-size:19px;
-  margin-bottom:6px;
-  color:#3730a3;
-}
-
 </style>
 </head>
 <body>
 <div class="wrap"><div class="card">
 <section id="start" class="start">
 <h1>📱 QR QUEST</h1>
-<p class="subtitle"><strong>Scan • Learn • Challenge Yourself</strong><br>10 Questions • General Knowledge • Moderate Difficulty</p>
+<p class="subtitle"><strong>Scan • Learn • Challenge Yourself</strong><br>September 2026 • 10 Questions • General Knowledge • Moderate Difficulty</p>
 <input id="fullName" class="input" placeholder="Enter FULL NAME" autocomplete="name">
 <input id="studentNumber" class="input" placeholder="Enter STUDENT NUMBER">
 <button id="startBtn" class="main-btn" type="button">Start Quiz</button>
 <div id="eligibilityStatus" class="small" style="min-height:22px;margin-top:12px;"></div>
 <p class="small">Please enter your complete name and student number before starting.</p>
 </section>
+
 <section id="quiz" class="hidden">
 <div class="qtop"><div id="qnum" class="qnum"></div></div>
 <div class="progress"><div id="progressbar" class="progressbar"></div></div>
@@ -73,6 +56,7 @@ h1{margin:0 0 10px;font-size:30px;color:#172554}
 <div id="question" class="question"></div><div id="options" class="options"></div>
 <div class="next-row"><button id="nextBtn" class="main-btn" type="button">Next →</button></div>
 </div></section>
+
 <section id="result" class="result hidden">
 <span class="badge">QUIZ COMPLETE</span><h1 id="thankYou"></h1><div id="score" class="score"></div>
 <div id="resultText" class="result-text"></div>
@@ -84,44 +68,40 @@ h1{margin:0 0 10px;font-size:30px;color:#172554}
 <p class="small">MCC Library • Library Learning Engagement Program</p>
 </section>
 </div></div><div id="confetti" class="confetti"></div>
+
 <script>
 const GOOGLE_SHEET_ENDPOINT="https://script.google.com/macros/s/AKfycbzjSXBK_WM3OQ9PYU1YOiT4K8YGMLIRanhwobyenExg1tKkIjtmw5qFXfwEH75_-mR-/exec";
+
 const questions=[
-{q:"Which country has the largest population in Southeast Asia?",a:["Thailand","Indonesia","Vietnam","Philippines"],correct:1},
-{q:"Which vitamin is mainly produced by the body when the skin is exposed to sunlight?",a:["Vitamin C","Vitamin B12","Vitamin D","Vitamin A"],correct:2},
-{q:"Which event is generally regarded as the beginning of World War II in Europe?",a:["D-Day invasion","Germany's invasion of Poland","Attack on Pearl Harbor","Fall of Berlin"],correct:1},
-{q:"Which layer of Earth's atmosphere contains most of the ozone layer?",a:["Mesosphere","Troposphere","Thermosphere","Stratosphere"],correct:3},
-{q:"Who wrote the novel 'The Little Prince'?",a:["Jules Verne","Albert Camus","Victor Hugo","Antoine de Saint-Exupéry"],correct:3},
-{q:"What is the primary purpose of the CPU in a computer?",a:["To display images on a monitor","To execute instructions and process data","To connect a computer to Wi-Fi","To permanently store files"],correct:1},
-{q:"Which Philippine volcano is known for having a lake within its volcanic crater?",a:["Mount Pinatubo","Taal Volcano","Mount Kanlaon","Mayon Volcano"],correct:1},
-{q:"Which branch of government is primarily responsible for interpreting laws in a democratic system?",a:["Legislative","Electoral","Judiciary","Executive"],correct:2},
-{q:"Which gas makes up the largest percentage of Earth's atmosphere?",a:["Oxygen","Hydrogen","Carbon dioxide","Nitrogen"],correct:3},
-{q:"If a book costs ₱800 and is discounted by 15%, how much is the sale price?",a:["₱720","₱680","₱760","₱700"],correct:1}
+{q:"Which country is both an island nation and a continent?",a:["Greenland","Australia","Japan","Madagascar"],correct:1},
+{q:"What is the chemical symbol for sodium?",a:["So","Na","S","N"],correct:1},
+{q:"Which Philippine hero wrote the novels 'Noli Me Tangere' and 'El Filibusterismo'?",a:["Andres Bonifacio","Apolinario Mabini","Jose Rizal","Emilio Jacinto"],correct:2},
+{q:"What is 25% of 360?",a:["80","90","100","120"],correct:1},
+{q:"Which organ in the human body primarily filters waste from the blood to produce urine?",a:["Liver","Kidneys","Lungs","Pancreas"],correct:1},
+{q:"Which file format is commonly used for documents that preserve their layout across different devices?",a:["PDF","TXT","CSV","HTML"],correct:0},
+{q:"Who wrote the play 'Romeo and Juliet'?",a:["Charles Dickens","William Shakespeare","George Orwell","Jane Austen"],correct:1},
+{q:"Which line of latitude divides Earth into the Northern and Southern Hemispheres?",a:["Prime Meridian","Tropic of Cancer","Equator","International Date Line"],correct:2},
+{q:"What does 'URL' stand for?",a:["Universal Reference Link","Uniform Resource Locator","User Routing Language","Unified Resource Line"],correct:1},
+{q:"Which renewable energy source uses moving air to generate electricity?",a:["Solar energy","Hydroelectric energy","Wind energy","Geothermal energy"],correct:2}
 ];
+
 let current=0,score=0,selected=-1,fullName="",studentNumber="",displayedQuestions=[];
 const $=id=>document.getElementById(id);
-$("startBtn").addEventListener("click",startQuiz);$("nextBtn").addEventListener("click",nextQuestion);
+$("startBtn").addEventListener("click",startQuiz);
+$("nextBtn").addEventListener("click",nextQuestion);
+
 function shuffle(array){const copy=[...array];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}return copy;}
 function prepareQuestions(){displayedQuestions=questions.map(item=>{const answers=item.a.map((text,index)=>({text,index}));const shuffled=shuffle(answers);return{q:item.q,a:shuffled.map(x=>x.text),c:shuffled.findIndex(x=>x.index===item.correct)};});}
+
 function startQuiz(){
  fullName=$("fullName").value.trim();
  studentNumber=$("studentNumber").value.trim();
 
- if(!fullName){
-   alert("Please enter your FULL NAME.");
-   $("fullName").focus();
-   return;
- }
-
- if(!studentNumber){
-   alert("Please enter your STUDENT NUMBER.");
-   $("studentNumber").focus();
-   return;
- }
+ if(!fullName){alert("Please enter your FULL NAME.");$("fullName").focus();return;}
+ if(!studentNumber){alert("Please enter your STUDENT NUMBER.");$("studentNumber").focus();return;}
 
  const status=$("eligibilityStatus");
  const btn=$("startBtn");
-
  status.textContent="Checking your QR Quest participation for this month...";
  btn.disabled=true;
  btn.textContent="Checking...";
@@ -129,31 +109,23 @@ function startQuiz(){
  checkMonthlyEligibility(studentNumber)
    .then(function(result){
      if(result.alreadyCompleted){
-       status.innerHTML=
-         "<strong>You have already completed QR Quest for this month.</strong><br>"+
-         "Only one QR Quest activity may be credited per month. "+
-         "Please participate in another LLEP activity or try QR Quest again next month.";
+       status.innerHTML="<strong>You have already completed QR Quest for this month.</strong><br>Only one QR Quest activity may be credited per month. Please participate in another LLEP activity or try QR Quest again next month.";
        btn.textContent="Already Completed";
        btn.disabled=true;
        return;
      }
-
      status.textContent="";
      btn.disabled=false;
      btn.textContent="Start Quiz";
-
      prepareQuestions();
      current=0;
      score=0;
-
      $("start").classList.add("hidden");
      $("quiz").classList.remove("hidden");
      showQuestion();
    })
    .catch(function(){
-     status.innerHTML=
-       "<strong>Unable to verify your monthly QR Quest status.</strong><br>"+
-       "Please ask the Library Staff for assistance.";
+     status.innerHTML="<strong>Unable to verify your monthly QR Quest status.</strong><br>Please ask the Library Staff for assistance.";
      btn.disabled=false;
      btn.textContent="Try Again";
    });
@@ -162,9 +134,10 @@ function startQuiz(){
 function checkMonthlyEligibility(number){
  return new Promise(function(resolve,reject){
    const callbackName="qrQuestCheck_"+Date.now()+"_"+Math.floor(Math.random()*100000);
+   const script=document.createElement("script");
 
    const cleanup=function(){
-     try{ delete window[callbackName]; }catch(e){}
+     try{delete window[callbackName];}catch(e){}
      if(script.parentNode) script.parentNode.removeChild(script);
    };
 
@@ -173,9 +146,7 @@ function checkMonthlyEligibility(number){
      resolve(data||{alreadyCompleted:false});
    };
 
-   const script=document.createElement("script");
-   script.src=
-     GOOGLE_SHEET_ENDPOINT+
+   script.src=GOOGLE_SHEET_ENDPOINT+
      "?action=checkMonthly"+
      "&studentNumber="+encodeURIComponent(number)+
      "&callback="+encodeURIComponent(callbackName)+
@@ -197,10 +168,64 @@ function checkMonthlyEligibility(number){
  });
 }
 
-function showQuestion(){selected=-1;const item=displayedQuestions[current];$("qnum").textContent="Question "+(current+1)+" of "+displayedQuestions.length;$("progressbar").style.width=((current+1)/displayedQuestions.length*100)+"%";$("question").textContent=item.q;const box=$("options");box.innerHTML="";item.a.forEach((answer,index)=>{const btn=document.createElement("button");btn.type="button";btn.className="option";btn.textContent=String.fromCharCode(65+index)+". "+answer;btn.addEventListener("click",()=>{selected=index;document.querySelectorAll(".option").forEach(b=>b.classList.remove("selected"));btn.classList.add("selected");});box.appendChild(btn);});$("nextBtn").textContent=current===displayedQuestions.length-1?"Submit Quiz ✓":"Next →";const qbox=$("questionBox");qbox.classList.remove("fade");void qbox.offsetWidth;qbox.classList.add("fade");}
-function nextQuestion(){if(selected===-1){alert("Please select an answer.");return;}if(selected===displayedQuestions[current].c)score++;current++;if(current<displayedQuestions.length)showQuestion();else finishQuiz();}
-function finishQuiz(){$("quiz").classList.add("hidden");$("result").classList.remove("hidden");const pct=Math.round(score/displayedQuestions.length*100);$("thankYou").textContent="Thank you, "+fullName+"!";$("score").textContent=score+" / "+displayedQuestions.length;$("resultText").innerHTML="<strong>Student Number:</strong> "+escapeHTML(studentNumber)+"<br><strong>Score:</strong> "+pct+"%<br><br>"+(pct>=90?"Excellent!":pct>=70?"Well done!":"Good effort! Keep learning and exploring.");sendQuizResult(score,pct);if(pct>=70)confetti();}
-function sendQuizResult(finalScore,percentage){const body=new URLSearchParams();body.append("fullName",fullName);body.append("studentNumber",studentNumber);body.append("score",finalScore);body.append("percentage",percentage);fetch(GOOGLE_SHEET_ENDPOINT,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},body:body.toString()}).catch(function(error){console.log("Quiz result submission error:",error);});}
+function showQuestion(){
+ selected=-1;
+ const item=displayedQuestions[current];
+ $("qnum").textContent="Question "+(current+1)+" of "+displayedQuestions.length;
+ $("progressbar").style.width=((current+1)/displayedQuestions.length*100)+"%";
+ $("question").textContent=item.q;
+ const box=$("options");box.innerHTML="";
+ item.a.forEach((answer,index)=>{
+   const btn=document.createElement("button");
+   btn.type="button";btn.className="option";
+   btn.textContent=String.fromCharCode(65+index)+". "+answer;
+   btn.addEventListener("click",()=>{
+     selected=index;
+     document.querySelectorAll(".option").forEach(b=>b.classList.remove("selected"));
+     btn.classList.add("selected");
+   });
+   box.appendChild(btn);
+ });
+ $("nextBtn").textContent=current===displayedQuestions.length-1?"Submit Quiz ✓":"Next →";
+ const qbox=$("questionBox");qbox.classList.remove("fade");void qbox.offsetWidth;qbox.classList.add("fade");
+}
+
+function nextQuestion(){
+ if(selected===-1){alert("Please select an answer.");return;}
+ if(selected===displayedQuestions[current].c)score++;
+ current++;
+ if(current<displayedQuestions.length)showQuestion();else finishQuiz();
+}
+
+function finishQuiz(){
+ $("quiz").classList.add("hidden");
+ $("result").classList.remove("hidden");
+ const pct=Math.round(score/displayedQuestions.length*100);
+ $("thankYou").textContent="Thank you, "+fullName+"!";
+ $("score").textContent=score+" / "+displayedQuestions.length;
+ $("resultText").innerHTML="<strong>Student Number:</strong> "+escapeHTML(studentNumber)+
+ "<br><strong>Score:</strong> "+pct+"%<br><br>"+
+ (pct>=90?"Excellent!":pct>=70?"Well done!":"Good effort! Keep learning and exploring.");
+ sendQuizResult(score,pct);
+ if(pct>=70)confetti();
+}
+
+function sendQuizResult(finalScore,percentage){
+ const body=new URLSearchParams();
+ body.append("fullName",fullName);
+ body.append("studentNumber",studentNumber);
+ body.append("score",finalScore);
+ body.append("percentage",percentage);
+ fetch(GOOGLE_SHEET_ENDPOINT,{
+   method:"POST",
+   mode:"no-cors",
+   headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},
+   body:body.toString()
+ }).catch(function(error){console.log("Quiz result submission error:",error);});
+}
+
 function escapeHTML(s){return s.replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch]));}
 function confetti(){const area=$("confetti");for(let i=0;i<70;i++){const p=document.createElement("i");p.className="piece";p.style.left=Math.random()*100+"%";p.style.background="hsl("+Math.floor(Math.random()*360)+",80%,60%)";p.style.animationDelay=Math.random()*1.2+"s";area.appendChild(p);}setTimeout(()=>area.innerHTML="",4000);}
-</script></body></html>
+</script>
+</body>
+</html>
